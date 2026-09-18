@@ -1,0 +1,216 @@
+from pathlib import Path
+import zipfile, textwrap, os, json
+
+root = Path("/mnt/data/hugo-studio-site")
+root.mkdir(exist_ok=True)
+
+files = {
+"index.html": r'''<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090909">
+  <title>HUGO STUDIO — Minecraft проекты и инструменты</title>
+  <meta name="description" content="HUGO STUDIO — проекты, инструменты, команда и статус сервисов.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <header class="nav-wrap">
+    <nav class="nav container">
+      <a class="brand" href="index.html"><span>HUGO</span> STUDIO</a>
+      <div class="nav-links">
+        <a href="team.html">Команда</a>
+        <a href="projects.html">Проекты</a>
+        <a href="tools.html">Инструменты</a>
+        <a href="status.html">Статус</a>
+      </div>
+      <a class="mini-btn" href="#links">Ссылки</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="eyebrow"><i></i> HUGO ECOSYSTEM</div>
+      <h1>Создаём.<br><span>Запускаем.</span><br>Развиваем.</h1>
+      <p class="hero-copy">Minecraft-проекты, полезные инструменты, сборки и сервисы — в одном аккуратном пространстве.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="projects.html">Смотреть проекты <b>↗</b></a>
+        <a class="btn ghost" href="status.html">Статус сервисов</a>
+      </div>
+      <div class="stats">
+        <div><strong>24/7</strong><span>доступ к сервисам</span></div>
+        <div><strong>4</strong><span>основных раздела</span></div>
+        <div><strong>∞</strong><span>идей для развития</span></div>
+      </div>
+    </section>
+
+    <section class="section container">
+      <div class="section-head">
+        <div><span class="kicker">Навигация</span><h2>Всё нужное — рядом.</h2></div>
+        <p>Быстрый доступ к основным разделам HUGO STUDIO.</p>
+      </div>
+
+      <div class="grid">
+        <a class="card featured" href="projects.html">
+          <span class="card-num">01</span>
+          <div class="card-icon">⌁</div>
+          <h3>Наши проекты</h3>
+          <p>Серверы, сборки и другие проекты студии.</p>
+          <span class="arrow">Открыть ↗</span>
+        </a>
+        <a class="card" href="team.html">
+          <span class="card-num">02</span>
+          <div class="card-icon">◎</div>
+          <h3>Наша команда</h3>
+          <p>Люди, которые создают и поддерживают проекты.</p>
+          <span class="arrow">Открыть ↗</span>
+        </a>
+        <a class="card" href="tools.html">
+          <span class="card-num">03</span>
+          <div class="card-icon">⌘</div>
+          <h3>Инструменты</h3>
+          <p>Полезные ссылки, утилиты и быстрые действия.</p>
+          <span class="arrow">Открыть ↗</span>
+        </a>
+        <a class="card" href="status.html">
+          <span class="card-num">04</span>
+          <div class="card-icon">◉</div>
+          <h3>Статус сервисов</h3>
+          <p>Проверка доступности сайта, API и игровых сервисов.</p>
+          <span class="arrow">Проверить ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section container" id="links">
+      <div class="link-panel">
+        <div>
+          <span class="kicker">Сообщество</span>
+          <h2>Мы на связи.</h2>
+          <p>Добавь свои настоящие ссылки в <code>index.html</code>.</p>
+        </div>
+        <div class="socials">
+          <a href="#" onclick="return false"><span>Telegram</span><b>↗</b></a>
+          <a href="#" onclick="return false"><span>Discord</span><b>↗</b></a>
+          <a href="#" onclick="return false"><span>YouTube</span><b>↗</b></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <div class="brand small"><span>HUGO</span> STUDIO</div>
+    <p>© 2026 HUGO STUDIO. Все права защищены.</p>
+    <a href="status.html">SYSTEM <i class="online-dot"></i></a>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>''',
+
+"team.html": r'''<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Команда — HUGO STUDIO</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="noise"></div><header class="nav-wrap"><nav class="nav container"><a class="brand" href="index.html"><span>HUGO</span> STUDIO</a><div class="nav-links"><a class="active" href="team.html">Команда</a><a href="projects.html">Проекты</a><a href="tools.html">Инструменты</a><a href="status.html">Статус</a></div><a class="mini-btn" href="index.html">На главную</a></nav></header>
+<main class="subpage container"><span class="kicker">HUGO / TEAM</span><h1>Наша команда.</h1><p class="lead">Заменяй имена, роли и ссылки на свои.</p>
+<div class="team-grid">
+<article class="person"><div class="avatar">H</div><span>OWNER</span><h3>Hugo</h3><p>Основатель проекта, управление и развитие.</p></article>
+<article class="person"><div class="avatar">D</div><span>DEVELOPER</span><h3>Developer</h3><p>Плагины, сайт, автоматизация и техническая часть.</p></article>
+<article class="person"><div class="avatar">M</div><span>MODERATOR</span><h3>Moderator</h3><p>Сообщество, поддержка и контроль проектов.</p></article>
+</div></main><footer class="footer container"><div class="brand small"><span>HUGO</span> STUDIO</div><p>© 2026 HUGO STUDIO</p><a href="index.html">← HOME</a></footer></body></html>''',
+
+"projects.html": r'''<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Проекты — HUGO STUDIO</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="noise"></div><header class="nav-wrap"><nav class="nav container"><a class="brand" href="index.html"><span>HUGO</span> STUDIO</a><div class="nav-links"><a href="team.html">Команда</a><a class="active" href="projects.html">Проекты</a><a href="tools.html">Инструменты</a><a href="status.html">Статус</a></div><a class="mini-btn" href="index.html">На главную</a></nav></header>
+<main class="subpage container"><span class="kicker">HUGO / PROJECTS</span><h1>Наши проекты.</h1><p class="lead">Карточки можно использовать для серверов, сборок, ботов и других продуктов.</p>
+<div class="project-list">
+<article class="project"><div class="project-top"><span>01 / MINECRAFT</span><b>ACTIVE</b></div><h2>HugoTime</h2><p>Игровой Minecraft-проект с PvP, кастомными механиками и собственной экосистемой.</p><div class="tags"><i>PAPER</i><i>PVP</i><i>1.21.x</i></div></article>
+<article class="project"><div class="project-top"><span>02 / TELEGRAM</span><b>ACTIVE</b></div><h2>HugoChat</h2><p>Сообщество HUGO STUDIO: новости, обновления и общение.</p><div class="tags"><i>COMMUNITY</i><i>NEWS</i></div></article>
+<article class="project muted"><div class="project-top"><span>03 / NEXT</span><b>SOON</b></div><h2>Новый проект</h2><p>Место под следующий релиз студии.</p><div class="tags"><i>COMING SOON</i></div></article>
+</div></main><footer class="footer container"><div class="brand small"><span>HUGO</span> STUDIO</div><p>© 2026 HUGO STUDIO</p><a href="index.html">← HOME</a></footer></body></html>''',
+
+"tools.html": r'''<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Инструменты — HUGO STUDIO</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="noise"></div><header class="nav-wrap"><nav class="nav container"><a class="brand" href="index.html"><span>HUGO</span> STUDIO</a><div class="nav-links"><a href="team.html">Команда</a><a href="projects.html">Проекты</a><a class="active" href="tools.html">Инструменты</a><a href="status.html">Статус</a></div><a class="mini-btn" href="index.html">На главную</a></nav></header>
+<main class="subpage container"><span class="kicker">HUGO / TOOLS</span><h1>Инструменты.</h1><p class="lead">Быстрые действия для игроков и команды.</p>
+<div class="tool-grid">
+<button class="tool-card" data-copy="d6.rustix.me:25490"><span>01</span><h3>Скопировать IP</h3><p>d6.rustix.me:25490</p><b>НАЖАТЬ →</b></button>
+<a class="tool-card" href="https://papermc.io/" target="_blank" rel="noopener"><span>02</span><h3>PaperMC</h3><p>Серверное ядро Minecraft.</p><b>ОТКРЫТЬ ↗</b></a>
+<a class="tool-card" href="https://hangar.papermc.io/" target="_blank" rel="noopener"><span>03</span><h3>Hangar</h3><p>Каталог плагинов для Paper.</p><b>ОТКРЫТЬ ↗</b></a>
+</div><div id="toast">Скопировано</div></main><footer class="footer container"><div class="brand small"><span>HUGO</span> STUDIO</div><p>© 2026 HUGO STUDIO</p><a href="index.html">← HOME</a></footer><script src="assets/app.js"></script></body></html>''',
+
+"status.html": r'''<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Статус — HUGO STUDIO</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="noise"></div><header class="nav-wrap"><nav class="nav container"><a class="brand" href="index.html"><span>HUGO</span> STUDIO</a><div class="nav-links"><a href="team.html">Команда</a><a href="projects.html">Проекты</a><a href="tools.html">Инструменты</a><a class="active" href="status.html">Статус</a></div><a class="mini-btn" href="index.html">На главную</a></nav></header>
+<main class="subpage container"><span class="kicker">HUGO / STATUS</span><h1>Статус сервисов.</h1><p class="lead">Демо-страница статуса. Для реальной проверки подключи API/мониторинг.</p>
+<div class="status-banner"><div><i class="online-dot big"></i><strong>Все системы работают</strong></div><span>Обновлено локально</span></div>
+<div class="status-list">
+<div><span>Основной сайт</span><b class="ok">Работает</b></div>
+<div><span>Minecraft сервер</span><b class="ok">Работает</b></div>
+<div><span>Telegram</span><b class="ok">Работает</b></div>
+<div><span>API</span><b class="ok">Работает</b></div>
+</div></main><footer class="footer container"><div class="brand small"><span>HUGO</span> STUDIO</div><p>© 2026 HUGO STUDIO</p><a href="index.html">← HOME</a></footer></body></html>''',
+
+"assets/style.css": r'''@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root{--bg:#080808;--panel:#111;--panel2:#161616;--text:#f4f4f4;--muted:#929292;--line:#252525;--red:#ff3030;--red2:#b30000}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}.container{width:min(1180px,calc(100% - 40px));margin:auto}.noise{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:99;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.orb{position:absolute;width:520px;height:520px;border-radius:50%;filter:blur(120px);opacity:.14;pointer-events:none}.orb-1{background:red;right:-150px;top:80px}.orb-2{background:#6d0000;left:-260px;top:540px}
+.nav-wrap{position:sticky;top:0;z-index:20;background:rgba(8,8,8,.75);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}.nav{height:78px;display:flex;align-items:center;justify-content:space-between}.brand{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.04em;font-size:21px}.brand span{color:var(--red)}.brand.small{font-size:17px}.nav-links{display:flex;gap:31px}.nav-links a{font-size:14px;color:#aaa;transition:.2s}.nav-links a:hover,.nav-links a.active{color:white}.mini-btn{border:1px solid #333;padding:10px 15px;border-radius:10px;font-size:13px;transition:.2s}.mini-btn:hover{border-color:#666;background:#141414}
+.hero{min-height:770px;display:flex;flex-direction:column;justify-content:center;position:relative;padding:95px 0 70px}.eyebrow,.kicker{text-transform:uppercase;font-size:12px;letter-spacing:.22em;color:#a3a3a3;font-weight:700}.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:28px}.eyebrow i{width:8px;height:8px;background:var(--red);border-radius:50%;box-shadow:0 0 24px var(--red)}
+.hero h1,.subpage h1{font-family:"Space Grotesk",sans-serif;margin:0;line-height:.9;letter-spacing:-.075em;text-transform:uppercase}.hero h1{font-size:clamp(64px,10vw,130px);max-width:1000px}.hero h1 span{color:transparent;-webkit-text-stroke:1.5px #4a4a4a}.hero-copy{width:min(620px,100%);font-size:18px;line-height:1.7;color:#9b9b9b;margin:34px 0 0}.hero-actions{display:flex;gap:12px;margin-top:32px}.btn{display:inline-flex;align-items:center;gap:22px;padding:16px 22px;border-radius:12px;font-size:14px;font-weight:700}.btn.primary{background:var(--red);color:#0a0a0a}.btn.primary:hover{background:#ff5353}.btn.ghost{border:1px solid #333;background:#0e0e0e}.btn.ghost:hover{border-color:#555}.stats{display:grid;grid-template-columns:repeat(3,1fr);width:min(680px,100%);margin-top:70px;border-top:1px solid var(--line);padding-top:24px}.stats div{display:flex;flex-direction:column;gap:6px}.stats strong{font-size:24px}.stats span{font-size:12px;color:#777}
+.section{padding:100px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:36px}.section-head h2,.link-panel h2{font-family:"Space Grotesk";font-size:clamp(36px,5vw,64px);margin:9px 0 0;letter-spacing:-.05em}.section-head p{color:#777;max-width:360px;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{min-height:290px;background:linear-gradient(145deg,#121212,#0d0d0d);border:1px solid var(--line);border-radius:18px;padding:28px;position:relative;overflow:hidden;transition:.28s}.card:after{content:"";position:absolute;inset:auto -70px -90px auto;width:180px;height:180px;background:var(--red);filter:blur(80px);opacity:0;transition:.3s}.card:hover{transform:translateY(-4px);border-color:#404040}.card:hover:after{opacity:.18}.card.featured{background:linear-gradient(140deg,#181111,#0e0e0e)}.card-num{position:absolute;right:24px;top:20px;color:#4a4a4a;font-size:12px}.card-icon{font-size:35px;color:var(--red);height:72px}.card h3{font-family:"Space Grotesk";font-size:27px;margin:20px 0 9px}.card p{color:#777;line-height:1.55;max-width:410px}.arrow{position:absolute;left:28px;bottom:25px;font-size:12px;font-weight:700;color:#bdbdbd}
+.link-panel{background:#101010;border:1px solid var(--line);border-radius:20px;padding:38px;display:flex;justify-content:space-between;gap:50px}.link-panel p{color:#777}.link-panel code{color:#bbb}.socials{min-width:44%}.socials a{display:flex;justify-content:space-between;padding:18px 4px;border-bottom:1px solid #282828;color:#bdbdbd}.socials a:hover{color:white}
+.footer{min-height:120px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#686868;font-size:12px}.footer a{display:flex;gap:8px;align-items:center}.online-dot{width:7px;height:7px;background:#37d67a;border-radius:50%;display:inline-block;box-shadow:0 0 12px #37d67a}.online-dot.big{width:11px;height:11px}
+.subpage{padding:100px 0 130px;min-height:calc(100vh - 198px)}.subpage h1{font-size:clamp(55px,9vw,108px);margin-top:16px}.lead{color:#888;font-size:17px;max-width:630px;line-height:1.7;margin:26px 0 55px}.team-grid,.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.person,.tool-card{background:#101010;border:1px solid var(--line);border-radius:18px;padding:26px;text-align:left}.avatar{width:80px;height:80px;display:grid;place-items:center;border-radius:20px;background:linear-gradient(135deg,#331010,#151515);font-size:30px;font-weight:900;color:var(--red);margin-bottom:55px}.person span,.tool-card span{font-size:10px;letter-spacing:.18em;color:#656565}.person h3,.tool-card h3{font-size:23px;margin:8px 0}.person p,.tool-card p{color:#777;line-height:1.5}
+.project-list{display:grid;gap:14px}.project{background:#101010;border:1px solid var(--line);border-radius:18px;padding:34px;transition:.25s}.project:hover{border-color:#444}.project-top{display:flex;justify-content:space-between;color:#666;font-size:11px;letter-spacing:.12em}.project-top b{color:#41db81}.project h2{font-family:"Space Grotesk";font-size:44px;margin:30px 0 12px;letter-spacing:-.04em}.project p{color:#858585;max-width:650px;line-height:1.6}.project.muted{opacity:.55}.tags{display:flex;gap:8px;margin-top:30px}.tags i{font-style:normal;font-size:9px;background:#1a1a1a;border:1px solid #292929;padding:8px 10px;border-radius:7px;color:#999}
+.tool-card{color:white;cursor:pointer;font:inherit;min-height:220px;transition:.25s}.tool-card:hover{transform:translateY(-3px);border-color:#444}.tool-card b{display:block;margin-top:38px;font-size:11px;color:var(--red)}#toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#efefef;color:#111;padding:11px 18px;border-radius:10px;font-size:12px;font-weight:700;opacity:0;transition:.25s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}
+.status-banner{display:flex;align-items:center;justify-content:space-between;background:#0f1712;border:1px solid #1d3b29;border-radius:16px;padding:23px 25px;margin-bottom:14px}.status-banner>div{display:flex;align-items:center;gap:13px}.status-banner span{font-size:11px;color:#6b8975}.status-list{border:1px solid var(--line);border-radius:16px;overflow:hidden}.status-list div{padding:21px 24px;display:flex;justify-content:space-between;background:#101010;border-bottom:1px solid var(--line)}.status-list div:last-child{border-bottom:0}.status-list span{color:#aaa}.status-list b{font-size:12px}.ok{color:#41db81}
+@media(max-width:760px){.container{width:min(100% - 24px,1180px)}.nav{height:67px}.nav-links{display:none}.hero{min-height:700px;padding-top:70px}.hero h1{font-size:58px}.hero-copy{font-size:15px}.hero-actions{flex-direction:column;align-items:stretch}.btn{justify-content:space-between}.stats{grid-template-columns:1fr;gap:20px;margin-top:45px}.section{padding:70px 0}.section-head{align-items:start;flex-direction:column}.section-head p{margin-bottom:0}.grid,.team-grid,.tool-grid{grid-template-columns:1fr}.card{min-height:260px}.link-panel{padding:24px;flex-direction:column}.socials{min-width:100%}.footer{flex-wrap:wrap;gap:10px;padding:30px 0}.subpage{padding-top:70px}.subpage h1{font-size:54px}.project h2{font-size:34px}.status-banner{align-items:flex-start;flex-direction:column;gap:12px}}
+''',
+
+"assets/app.js": r'''document.querySelectorAll("[data-copy]").forEach(btn=>{
+  btn.addEventListener("click", async()=>{
+    const value=btn.dataset.copy;
+    try{await navigator.clipboard.writeText(value)}catch(e){
+      const t=document.createElement("textarea");t.value=value;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();
+    }
+    const toast=document.getElementById("toast");
+    if(toast){toast.textContent="Скопировано: "+value;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1800)}
+  });
+});
+'''
+}
+
+for rel, content in files.items():
+    path = root / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+readme = """HUGO STUDIO SITE
+
+Запуск:
+1. Распакуйте архив.
+2. Откройте index.html двойным кликом.
+3. Для публикации загрузите содержимое папки на хостинг.
+
+Что менять:
+- index.html: Telegram / Discord / YouTube ссылки.
+- tools.html: IP сервера и полезные ссылки.
+- team.html: состав команды.
+- projects.html: проекты.
+- assets/style.css: цвета и внешний вид.
+
+Для обычного статического хостинга серверная часть не нужна.
+"""
+(root / "README.txt").write_text(readme, encoding="utf-8")
+
+zip_path = Path("/mnt/data/HugoStudio-site.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for p in root.rglob("*"):
+        if p.is_file():
+            z.write(p, p.relative_to(root.parent))
+
+print(f"Готово: {zip_path}")
+print("Файлы:", ", ".join(sorted(str(p.relative_to(root)) for p in root.rglob("*") if p.is_file())))
